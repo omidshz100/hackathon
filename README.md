@@ -51,7 +51,7 @@ A full-stack web application that helps users find lawyers based on their legal 
 
 ## Example Use
 
-- Type: `I have problem with my wife, I can't live more, I need to separate from her, I don't know what to do`
+- Type: `I’m having problems with the apartment I bought. The seller didn’t disclose existing structural damage, and now I’m stuck with unexpected repair costs. I don’t know what to do.`
 - The app will suggest the closest example (e.g., "I need help with my divorce.") and show relevant lawyers.
 
 ## Customization
