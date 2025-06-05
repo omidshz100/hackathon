@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Legal Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <h1 class="mb-4">Legal Assistant</h1>
+    <form method="post" class="mb-4" id="legal-form">
+        <div class="mb-3">
+            <label for="query" class="form-label">Describe your legal issue:</label>
+            <textarea class="form-control" id="query" name="query" rows="3" required>{{ query }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Find Lawyers</button>
+    </form>
+
+    <div class="mb-2">
+        <div class="input-group">
+            <span class="input-group-text" id="search-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
+                </svg>
+            </span>
+            <input type="text" class="form-control" id="example-search" placeholder="Search example cases..." aria-label="Search" aria-describedby="search-icon">
+        </div>
+    </div>
+    <div class="mb-4">
+        <div class="d-flex flex-nowrap overflow-auto gap-2" style="white-space:nowrap;" id="examples-container">
+            {% for example in examples %}
+                <button type="button" class="btn btn-outline-secondary example-btn" style="flex:0 0 auto; white-space:nowrap;" data-example="{{ example }}">{{ example }}</button>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        // Filter example buttons as you type
+        document.getElementById('example-search').addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('#examples-container .example-btn').forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(filter)) {
+                    btn.style.display = '';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
+        });
+
+        // Existing code for button click
+        document.querySelectorAll('.example-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('query').value = this.dataset.example;
+                document.getElementById('legal-form').submit();
+            });
+        });
+    </script>
+
+    {% if category %}
+        <h4>Detected Category: <span class="badge bg-info">{{ category }}</span></h4>
+        {% if lawyers %}
+            <div class="row mt-4">
+                {% for lawyer in lawyers %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ lawyer[1] }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ lawyer[2] }}</h6>
+                            <p class="card-text">
+                                <strong>City:</strong> {{ lawyer[3] }}<br>
+                                <strong>Contact:</strong> {{ lawyer[4] }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning mt-3">No lawyers found for this category.</div>
+        {% endif %}
+    {% elif query %}
+        <div class="alert alert-danger mt-3">Sorry, could not detect a legal category from your input.</div>
+    {% endif %}
+
+    {% if closest_example %}
+        <div class="alert alert-info mt-3">
+            <strong>Closest Example:</strong> {{ closest_example }}
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>
